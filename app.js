@@ -9,5 +9,5 @@ app.use(express.json());
 app.use("/", routes);
 
 app.listen(port, () => {
-  console.log(`Server up and running on port ${port}`);
+  console.log(`Server up and run on port ${port}`);
 });
