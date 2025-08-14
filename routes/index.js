@@ -4,6 +4,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 router.use("/auth", require("./auth"));
 router.use("/booking", authMiddleware, require("./booking"));
+router.use("/room", authMiddleware, require("./room"));
 
 router.use("/", (req, res) => {
   res.status(200).json({
