@@ -1,8 +1,95 @@
+const { Op } = require("sequelize");
 const { booking } = require("../models");
 
 const index = async (req, res) => {
   try {
     const bookings = await booking.findAll();
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(200).send({
+        message: "Booking still empty",
+        result: [],
+      });
+    }
+
+    return res.status(200).send({
+      message: "Sucessfully fetched bookings.",
+      result: bookings,
+    });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+const getBookingById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const bookings = await booking.findAll({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(200).send({
+        message: "Booking still empty",
+        result: [],
+      });
+    }
+
+    return res.status(200).send({
+      message: "Sucessfully fetched booking.",
+      result: bookings,
+    });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+const getCheckInToday = async (req, res) => {
+  try {
+    // Get today at 00:00
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    // Get tomorrow at 00:00
+    const todayEnd = new Date(todayStart);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const bookings = await booking.findAll({
+      where: {
+        from: {
+          [Op.gte]: todayStart, // from >= today 00:00
+          [Op.lt]: todayEnd, // from < tomorrow 00:00
+        },
+      },
+    });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(200).send({
+        message: "Booking still empty",
+        result: [],
+      });
+    }
+
+    return res.status(200).send({
+      message: "Sucessfully fetched bookings.",
+      result: bookings,
+    });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+const getBookingToday = async (req, res) => {
+  try {
+    const today = new Date();
+    const bookings = await booking.findAll({
+      where: {
+        from: { [Op.lte]: today }, // from ≤ today
+        to: { [Op.gte]: today }, // to ≥ today
+      },
+    });
 
     if (!bookings || bookings.length === 0) {
       return res.status(200).send({
@@ -79,4 +166,7 @@ module.exports = {
   create,
   update,
   destroy,
+  getBookingById,
+  getCheckInToday,
+  getBookingToday,
 };

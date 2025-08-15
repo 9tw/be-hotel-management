@@ -22,6 +22,30 @@ const index = async (req, res) => {
   }
 };
 
+const getAllRoomName = async (req, res) => {
+  try {
+    const rooms = await room.findAll({
+      attributes: ["name"],
+      order: [["id", "ASC"]],
+      raw: true,
+    });
+
+    if (!rooms || rooms.length === 0) {
+      return res.status(200).send({
+        message: "Room still empty",
+        result: [],
+      });
+    }
+
+    return res.status(200).send({
+      message: "Sucessfully fetched rooms name.",
+      result: rooms,
+    });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
 const create = async (req, res) => {
   try {
     const { ...other } = req.body;
@@ -81,4 +105,5 @@ module.exports = {
   create,
   update,
   destroy,
+  getAllRoomName,
 };
