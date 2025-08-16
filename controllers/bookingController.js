@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { booking } = require("../models");
+const { room, booking } = require("../models");
 
 const index = async (req, res) => {
   try {
@@ -83,13 +83,41 @@ const getCheckInToday = async (req, res) => {
 
 const getBookingToday = async (req, res) => {
   try {
-    const today = new Date();
-    const bookings = await booking.findAll({
-      where: {
-        from: { [Op.lte]: today }, // from ≤ today
-        to: { [Op.gte]: today }, // to ≥ today
-      },
-    });
+    const { from, to } = req.query;
+    var bookings;
+
+    if (from && to) {
+      bookings = await booking.findAll({
+        where: {
+          from: { [Op.between]: [from, to] },
+          // to: { [Op.gte]: to },
+        },
+        include: [
+          {
+            model: room,
+            as: "room",
+            required: false,
+            attributes: ["id", "name"],
+          },
+        ],
+      });
+    } else {
+      const today = new Date();
+      bookings = await booking.findAll({
+        where: {
+          from: { [Op.lte]: today }, // from ≤ today
+          to: { [Op.gte]: today }, // to ≥ today
+        },
+        include: [
+          {
+            model: room,
+            as: "room",
+            required: false,
+            attributes: ["id", "name"],
+          },
+        ],
+      });
+    }
 
     if (!bookings || bookings.length === 0) {
       return res.status(200).send({
