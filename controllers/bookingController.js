@@ -83,40 +83,62 @@ const getCheckInToday = async (req, res) => {
 
 const getBookingToday = async (req, res) => {
   try {
-    const { from, to } = req.query;
+    const { view, from, to } = req.query;
     var bookings;
 
-    if (from && to) {
-      bookings = await booking.findAll({
-        where: {
-          from: { [Op.between]: [from, to] },
-          // to: { [Op.gte]: to },
-        },
-        include: [
-          {
-            model: room,
-            as: "room",
-            required: false,
-            attributes: ["id", "name"],
+    if (view === "list") {
+      if (from && to) {
+        bookings = await booking.findAll({
+          where: {
+            from: { [Op.between]: [from, to] },
+            // to: { [Op.gte]: to },
           },
-        ],
-      });
-    } else {
-      const today = new Date();
-      bookings = await booking.findAll({
-        where: {
-          from: { [Op.lte]: today }, // from ≤ today
-          to: { [Op.gte]: today }, // to ≥ today
-        },
-        include: [
-          {
-            model: room,
-            as: "room",
-            required: false,
-            attributes: ["id", "name"],
+          include: [
+            {
+              model: room,
+              as: "room",
+              required: false,
+              attributes: ["id", "name"],
+            },
+          ],
+        });
+      } else {
+        const today = new Date();
+        bookings = await booking.findAll({
+          where: {
+            from: { [Op.lte]: today }, // from ≤ today
+            to: { [Op.gte]: today }, // to ≥ today
           },
-        ],
-      });
+          include: [
+            {
+              model: room,
+              as: "room",
+              required: false,
+              attributes: ["id", "name"],
+            },
+          ],
+        });
+      }
+    } else if (view === "table") {
+      if (from && to) {
+      } else {
+        const today = new Date();
+        bookings = await room.findAll({
+          order: [["id", "ASC"]],
+          include: [
+            {
+              model: booking,
+              as: "bookings", // alias must match your association
+              where: {
+                from: { [Op.lte]: today },
+                to: { [Op.gte]: today },
+              },
+              required: false, // 👈 so rooms without bookings still appear
+              attributes: ["id", "name", "from", "to"],
+            },
+          ],
+        });
+      }
     }
 
     if (!bookings || bookings.length === 0) {
