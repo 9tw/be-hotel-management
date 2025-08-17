@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const { room, booking } = require("../models");
 
 const index = async (req, res) => {
@@ -63,6 +63,17 @@ const getCheckInToday = async (req, res) => {
           [Op.lt]: todayEnd, // from < tomorrow 00:00
         },
       },
+      include: [
+        {
+          model: room,
+          as: "room",
+          required: false,
+          attributes: ["id", "name"],
+        },
+      ],
+      attributes: {
+        include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
+      },
     });
 
     if (!bookings || bookings.length === 0) {
@@ -101,6 +112,9 @@ const getBookingToday = async (req, res) => {
               attributes: ["id", "name"],
             },
           ],
+          attributes: {
+            include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
+          },
         });
       } else {
         const today = new Date();
@@ -117,6 +131,9 @@ const getBookingToday = async (req, res) => {
               attributes: ["id", "name"],
             },
           ],
+          attributes: {
+            include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
+          },
         });
       }
     } else if (view === "table") {

@@ -3,6 +3,7 @@ const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 
 router.use("/auth", require("./auth"));
+router.use("/dashboard", authMiddleware, require("./dashboard"));
 router.use("/booking", authMiddleware, require("./booking"));
 router.use("/room", authMiddleware, require("./room"));
 
