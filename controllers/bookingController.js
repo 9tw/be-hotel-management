@@ -138,6 +138,65 @@ const getBookingToday = async (req, res) => {
       }
     } else if (view === "table") {
       if (from && to) {
+        const filterFrom = new Date(from);
+        const filterTo = new Date(to);
+
+        // 1. Fetch all rooms with overlapping bookings
+        const rooms = await room.findAll({
+          order: [["id", "ASC"]],
+          include: [
+            {
+              model: booking,
+              as: "bookings",
+              where: {
+                [Op.or]: [
+                  { from: { [Op.between]: [filterFrom, filterTo] } },
+                  { to: { [Op.between]: [filterFrom, filterTo] } },
+                  {
+                    from: { [Op.lte]: filterFrom },
+                    to: { [Op.gte]: filterTo },
+                  },
+                ],
+              },
+              required: false,
+              attributes: ["id", "name", "from", "to"],
+            },
+          ],
+        });
+
+        // 2. Generate dates in range
+        function getDatesBetween(start, end) {
+          const dates = [];
+          let current = new Date(start);
+          while (current <= end) {
+            dates.push(new Date(current));
+            current.setDate(current.getDate() + 1);
+          }
+          return dates;
+        }
+
+        const dates = getDatesBetween(filterFrom, filterTo);
+
+        // 3. Build result grouped by date
+        const result = dates.map((d) => {
+          const dayString = d.toISOString().split("T")[0]; // YYYY-MM-DD
+          return {
+            date: dayString,
+            rooms: rooms.map((r) => {
+              const bookingsForDay = r.bookings.filter(
+                (b) => new Date(b.from) <= d && new Date(b.to) >= d
+              );
+              return {
+                id: r.id,
+                name: r.name,
+                bookings: bookingsForDay,
+                status: r.status,
+              };
+            }),
+          };
+        });
+
+        bookings = result;
       } else {
         const today = new Date();
         bookings = await room.findAll({
