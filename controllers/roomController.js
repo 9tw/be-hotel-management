@@ -2,20 +2,41 @@ const { room } = require("../models");
 
 const index = async (req, res) => {
   try {
-    const rooms = await room.findAll({
+    // get page & limit from query params, default: page=1, limit=10
+    let { page, limit } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const offset = (page - 1) * limit;
+
+    // find with pagination
+    const { count, rows } = await room.findAndCountAll({
       order: [["id", "ASC"]],
+      limit,
+      offset,
     });
 
-    if (!rooms || rooms.length === 0) {
+    if (!rows || rows.length === 0) {
       return res.status(200).send({
         message: "Room still empty",
         result: [],
+        pagination: {
+          total: count,
+          page,
+          limit,
+          totalPages: Math.ceil(count / limit),
+        },
       });
     }
 
     return res.status(200).send({
-      message: "Sucessfully fetched rooms.",
-      result: rooms,
+      message: "Successfully fetched rooms.",
+      result: rows,
+      pagination: {
+        total: count, // total number of rooms
+        page, // current page
+        limit, // items per page
+        totalPages: Math.ceil(count / limit), // total pages
+      },
     });
   } catch (error) {
     return res.status(500).send({ message: error.message });
