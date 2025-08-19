@@ -2,10 +2,24 @@ const { room } = require("../models");
 
 const index = async (req, res) => {
   try {
+    const rooms = await room.findAll({ order: [["id", "ASC"]] });
+    if (!rooms || rooms.length === 0) {
+      return res.status(200).send({ message: "Room still empty", result: [] });
+    }
+    return res
+      .status(200)
+      .send({ message: "Sucessfully fetched rooms.", result: rooms });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+const getAllRoomPagination = async (req, res) => {
+  try {
     // get page & limit from query params, default: page=1, limit=10
     let { page, limit } = req.query;
-    page = parseInt(page) || 1;
-    limit = parseInt(limit) || 10;
+    page = parseInt(page);
+    limit = parseInt(limit);
     const offset = (page - 1) * limit;
 
     // find with pagination
@@ -127,4 +141,5 @@ module.exports = {
   update,
   destroy,
   getAllRoomName,
+  getAllRoomPagination,
 };

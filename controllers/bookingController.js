@@ -95,17 +95,21 @@ const getCheckInToday = async (req, res) => {
 const getBookingToday = async (req, res) => {
   try {
     const { view, search, from, to } = req.query;
-    var bookings;
+    let { page, limit } = req.query;
+    let bookings;
+    let counts;
+    page = parseInt(page);
+    limit = parseInt(limit);
+    const offset = (page - 1) * limit;
 
     if (view === "list") {
       const today = new Date();
 
       if (search && from != "null" && to != "null") {
-        bookings = await booking.findAll({
+        const { count, rows } = await booking.findAndCountAll({
           where: {
             name: { [Op.iLike]: `%${search}%` },
             from: { [Op.between]: [from, to] },
-            // to: { [Op.gte]: to },
           },
           include: [
             {
@@ -118,9 +122,14 @@ const getBookingToday = async (req, res) => {
           attributes: {
             include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
           },
+          limit,
+          offset,
         });
+
+        counts = count;
+        bookings = rows;
       } else if (search) {
-        bookings = await booking.findAll({
+        const { count, rows } = await booking.findAndCountAll({
           where: {
             name: { [Op.iLike]: `%${search}%` },
             from: { [Op.lte]: today }, // from ≤ today
@@ -137,9 +146,14 @@ const getBookingToday = async (req, res) => {
           attributes: {
             include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
           },
+          limit,
+          offset,
         });
+
+        counts = count;
+        bookings = rows;
       } else {
-        bookings = await booking.findAll({
+        const { count, rows } = await booking.findAndCountAll({
           where: {
             from: { [Op.lte]: today }, // from ≤ today
             to: { [Op.gte]: today }, // to ≥ today
@@ -155,8 +169,37 @@ const getBookingToday = async (req, res) => {
           attributes: {
             include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
           },
+          limit,
+          offset,
+        });
+
+        counts = count;
+        bookings = rows;
+      }
+
+      if (!bookings || bookings.length === 0) {
+        return res.status(200).send({
+          message: "Booking still empty",
+          result: [],
+          pagination: {
+            total: counts,
+            page,
+            limit,
+            totalPages: Math.ceil(counts / limit),
+          },
         });
       }
+
+      return res.status(200).send({
+        message: "Sucessfully fetched bookings.",
+        result: bookings,
+        pagination: {
+          total: counts,
+          page,
+          limit,
+          totalPages: Math.ceil(counts / limit),
+        },
+      });
     } else if (view === "table") {
       if (from && to) {
         const filterFrom = new Date(from);
@@ -236,19 +279,19 @@ const getBookingToday = async (req, res) => {
           ],
         });
       }
-    }
 
-    if (!bookings || bookings.length === 0) {
+      if (!bookings || bookings.length === 0) {
+        return res.status(200).send({
+          message: "Booking still empty",
+          result: [],
+        });
+      }
+
       return res.status(200).send({
-        message: "Booking still empty",
-        result: [],
+        message: "Sucessfully fetched bookings.",
+        result: bookings,
       });
     }
-
-    return res.status(200).send({
-      message: "Sucessfully fetched bookings.",
-      result: bookings,
-    });
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }
