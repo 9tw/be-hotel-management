@@ -94,13 +94,16 @@ const getCheckInToday = async (req, res) => {
 
 const getBookingToday = async (req, res) => {
   try {
-    const { view, from, to } = req.query;
+    const { view, search, from, to } = req.query;
     var bookings;
 
     if (view === "list") {
-      if (from && to) {
+      const today = new Date();
+
+      if (search && from != "null" && to != "null") {
         bookings = await booking.findAll({
           where: {
+            name: { [Op.iLike]: `%${search}%` },
             from: { [Op.between]: [from, to] },
             // to: { [Op.gte]: to },
           },
@@ -116,8 +119,26 @@ const getBookingToday = async (req, res) => {
             include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
           },
         });
+      } else if (search) {
+        bookings = await booking.findAll({
+          where: {
+            name: { [Op.iLike]: `%${search}%` },
+            from: { [Op.lte]: today }, // from ≤ today
+            to: { [Op.gte]: today }, // to ≥ today
+          },
+          include: [
+            {
+              model: room,
+              as: "room",
+              required: false,
+              attributes: ["id", "name"],
+            },
+          ],
+          attributes: {
+            include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
+          },
+        });
       } else {
-        const today = new Date();
         bookings = await booking.findAll({
           where: {
             from: { [Op.lte]: today }, // from ≤ today
