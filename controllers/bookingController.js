@@ -98,9 +98,13 @@ const getBookingToday = async (req, res) => {
     let { page, limit } = req.query;
     let bookings;
     let counts;
+
     page = parseInt(page);
     limit = parseInt(limit);
+
     const offset = (page - 1) * limit;
+    const filterFrom = new Date(from);
+    const filterTo = new Date(to);
 
     if (view === "list") {
       const today = new Date();
@@ -109,7 +113,43 @@ const getBookingToday = async (req, res) => {
         const { count, rows } = await booking.findAndCountAll({
           where: {
             name: { [Op.iLike]: `%${search}%` },
-            from: { [Op.between]: [from, to] },
+            [Op.or]: [
+              { from: { [Op.between]: [filterFrom, filterTo] } },
+              { to: { [Op.between]: [filterFrom, filterTo] } },
+              {
+                from: { [Op.lte]: filterFrom },
+                to: { [Op.gte]: filterTo },
+              },
+            ],
+          },
+          include: [
+            {
+              model: room,
+              as: "room",
+              required: false,
+              attributes: ["id", "name"],
+            },
+          ],
+          attributes: {
+            include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
+          },
+          limit,
+          offset,
+        });
+
+        counts = count;
+        bookings = rows;
+      } else if (search === `` && from != undefined && to != undefined) {
+        const { count, rows } = await booking.findAndCountAll({
+          where: {
+            [Op.or]: [
+              { from: { [Op.between]: [filterFrom, filterTo] } },
+              { to: { [Op.between]: [filterFrom, filterTo] } },
+              {
+                from: { [Op.lte]: filterFrom },
+                to: { [Op.gte]: filterTo },
+              },
+            ],
           },
           include: [
             {
@@ -202,9 +242,6 @@ const getBookingToday = async (req, res) => {
       });
     } else if (view === "table") {
       if (from && to) {
-        const filterFrom = new Date(from);
-        const filterTo = new Date(to);
-
         // 1. Fetch all rooms with overlapping bookings
         const rooms = await room.findAll({
           order: [["id", "ASC"]],
