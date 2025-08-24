@@ -285,7 +285,7 @@ const getBookingToday = async (req, res) => {
             date: dayString,
             rooms: rooms.map((r) => {
               const bookingsForDay = r.bookings.filter(
-                (b) => new Date(b.from) <= d && new Date(b.to) >= d
+                (b) => new Date(b.from) <= d && new Date(b.to) > d
               );
               return {
                 id: r.id,
