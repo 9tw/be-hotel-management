@@ -13,8 +13,8 @@ let sequelize;
 // if (config.use_env_variable) {
 //   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 // } else {
-sequelize = new Sequelize(config.url, {
-  dialect: config.dialect,
+sequelize = new Sequelize(process.env.DB_URL, {
+  dialect: process.env.DB_DIALEC,
   logging: false,
   dialectOptions: {
     ssl: {
