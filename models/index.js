@@ -14,7 +14,7 @@ let sequelize;
 //   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 // } else {
 sequelize = new Sequelize(process.env.DB_URL, {
-  dialect: process.env.DB_DIALEC,
+  dialect: "postgres",
   logging: false,
   dialectOptions: {
     ssl: {
