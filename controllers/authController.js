@@ -7,7 +7,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     const findUser = await user.findOne({
-      where: { email },
+      where: { email: email.toLowerCase() },
     });
 
     if (!findUser || !bcrypt.compareSync(password, findUser.password)) {
