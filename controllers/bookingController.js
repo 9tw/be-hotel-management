@@ -78,13 +78,63 @@ const getCheckInToday = async (req, res) => {
 
     if (!bookings || bookings.length === 0) {
       return res.status(200).send({
-        message: "Booking still empty",
+        message: "Check In today still empty.",
         result: [],
       });
     }
 
     return res.status(200).send({
-      message: "Sucessfully fetched bookings.",
+      message: "Sucessfully fetched check in today.",
+      result: bookings,
+    });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+const getCheckInTomorrow = async (req, res) => {
+  try {
+    // Get today
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+
+    // Get tomorrow at 00:00
+    const tomorrowStart = new Date(today);
+    tomorrowStart.setHours(0, 0, 0, 0);
+
+    // Get the day after tomorrow at 00:00
+    const tomorrowEnd = new Date(tomorrowStart);
+    tomorrowEnd.setDate(tomorrowEnd.getDate() + 1);
+
+    const bookings = await booking.findAll({
+      where: {
+        from: {
+          [Op.gte]: tomorrowStart, // from >= tomorrow 00:00
+          [Op.lt]: tomorrowEnd, // from < the day after tomorrow 00:00
+        },
+      },
+      include: [
+        {
+          model: room,
+          as: "room",
+          required: false,
+          attributes: ["id", "name"],
+        },
+      ],
+      attributes: {
+        include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
+      },
+    });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(200).send({
+        message: "Check In tomorrow still empty.",
+        result: [],
+      });
+    }
+
+    return res.status(200).send({
+      message: "Sucessfully fetched check in tomorrow.",
       result: bookings,
     });
   } catch (error) {
@@ -395,5 +445,6 @@ module.exports = {
   destroy,
   getBookingById,
   getCheckInToday,
+  getCheckInTomorrow,
   getBookingToday,
 };

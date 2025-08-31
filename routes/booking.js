@@ -7,12 +7,14 @@ const {
   destroy,
   getBookingById,
   getCheckInToday,
+  getCheckInTomorrow,
   getBookingToday,
 } = require("../controllers/bookingController");
 
 router.get("/", index);
 router.get("/get/:id", getBookingById);
-router.get("/check-in", getCheckInToday);
+router.get("/check-in-today", getCheckInToday);
+router.get("/check-in-tomorrow", getCheckInTomorrow);
 router.get("/today", getBookingToday);
 router.post("/", create);
 router.put("/:id", update);
