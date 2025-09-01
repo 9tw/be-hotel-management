@@ -1,8 +1,49 @@
-const { room } = require("../models");
+const { Op, Sequelize } = require("sequelize");
+const { room, booking } = require("../models");
 
 const index = async (req, res) => {
   try {
     const rooms = await room.findAll({ order: [["id", "ASC"]] });
+    if (!rooms || rooms.length === 0) {
+      return res.status(200).send({ message: "Room still empty", result: [] });
+    }
+    return res
+      .status(200)
+      .send({ message: "Sucessfully fetched rooms.", result: rooms });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+const getRoomFilter = async (req, res) => {
+  try {
+    const { from, to } = req.query;
+
+    const fromChange = new Date(from);
+    fromChange.setDate(fromChange.getDate() + 1);
+
+    // const rooms = await room.findAll({ order: [["id", "ASC"]] });
+    const rooms = await room.findAll({
+      include: [
+        {
+          model: booking,
+          as: "bookings",
+          required: false,
+          where: {
+            [Op.and]: [
+              { from: { [Op.lte]: to } },
+              { to: { [Op.gte]: fromChange } },
+            ],
+          },
+        },
+      ],
+      where: {
+        status: { [Op.notIn]: [2, 3] },
+        [Op.and]: Sequelize.where(Sequelize.col("bookings.id"), null),
+      },
+      order: [["id", "ASC"]],
+    });
+
     if (!rooms || rooms.length === 0) {
       return res.status(200).send({ message: "Room still empty", result: [] });
     }
@@ -142,4 +183,5 @@ module.exports = {
   destroy,
   getAllRoomName,
   getAllRoomPagination,
+  getRoomFilter,
 };
