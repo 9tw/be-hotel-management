@@ -1,5 +1,6 @@
 const { Op, Sequelize } = require("sequelize");
 const { staff } = require("../models");
+const path = require("path");
 
 const index = async (req, res) => {
   try {
@@ -81,18 +82,56 @@ const getStaffById = async (req, res) => {
   }
 };
 
+// const create = async (req, res) => {
+//   try {
+//     const { ...other } = req.body;
+
+//     const data = await staff.create({ ...other });
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Sucessfully created staff.",
+//       data: data,
+//     });
+//   } catch (error) {
+//     return res.status(500).send({ message: error.message });
+//   }
+// };
+
 const create = async (req, res) => {
   try {
     const { ...other } = req.body;
 
-    const data = await staff.create({ ...other });
+    let photoPath = null;
+    if (req.files && req.files.photo) {
+      const photo = req.files.photo;
+
+      // give unique filename
+      const fileName = Date.now() + "_" + photo.name;
+      const filePath = path.join(__dirname, "..", "uploads", fileName);
+
+      // move file to uploads/
+      await photo.mv(filePath);
+
+      photoPath = filePath; // save path in DB
+    }
+
+    const data = await staff.create({
+      ...other,
+      photo: photoPath,
+    });
 
     return res.status(200).json({
       success: true,
-      message: "Sucessfully created staff.",
-      data: data,
+      message: "Successfully created staff.",
+      data,
     });
   } catch (error) {
+    if (error.code === "LIMIT_FILE_SIZE") {
+      return res
+        .status(400)
+        .json({ success: false, message: "File size exceeds 2MB" });
+    }
     return res.status(500).send({ message: error.message });
   }
 };
@@ -107,7 +146,23 @@ const update = async (req, res) => {
       return res.status(404).send({ message: "Staff not found." });
     }
 
-    const updateData = { ...other };
+    let photoPath = null;
+    let updateData;
+    if (req.files && req.files.photo) {
+      const photo = req.files.photo;
+
+      // give unique filename
+      const fileName = Date.now() + "_" + photo.name;
+      const filePath = path.join(__dirname, "..", "uploads", fileName);
+
+      // move file to uploads/
+      await photo.mv(filePath);
+
+      photoPath = path.join("/uploads", fileName); // save path in DB
+      updateData = { ...other, photo: photoPath };
+    }
+
+    updateData = { ...other };
 
     await data.update(updateData);
 
@@ -117,6 +172,11 @@ const update = async (req, res) => {
       data: data,
     });
   } catch (error) {
+    if (error.code === "LIMIT_FILE_SIZE") {
+      return res
+        .status(400)
+        .json({ success: false, message: "File size exceeds 2MB" });
+    }
     return res.status(500).send({ message: error.message });
   }
 };
