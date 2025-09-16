@@ -28,6 +28,14 @@ const getBookingById = async (req, res) => {
       where: {
         id: id,
       },
+      include: [
+        {
+          model: room,
+          as: "room",
+          required: false,
+          attributes: ["id", "name"],
+        },
+      ],
     });
 
     if (!bookings || bookings.length === 0) {
