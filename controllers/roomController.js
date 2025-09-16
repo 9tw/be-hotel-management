@@ -22,6 +22,9 @@ const getRoomFilter = async (req, res) => {
     const fromChange = new Date(from);
     fromChange.setDate(fromChange.getDate() + 1);
 
+    console.log(fromChange);
+    console.log(to);
+
     // const rooms = await room.findAll({ order: [["id", "ASC"]] });
     const rooms = await room.findAll({
       include: [
