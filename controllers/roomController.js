@@ -19,6 +19,9 @@ const getRoomFilter = async (req, res) => {
   try {
     const { from, to } = req.query;
 
+    const fromChange = new Date(from);
+    fromChange.setDate(fromChange.getDate() + 1);
+
     const rooms = await room.findAll({
       include: [
         {
@@ -28,7 +31,7 @@ const getRoomFilter = async (req, res) => {
           where: {
             [Op.and]: [
               { from: { [Op.lt]: new Date(to) } },
-              { to: { [Op.gte]: new Date(from) } },
+              { to: { [Op.gte]: fromChange } },
             ],
           },
         },
