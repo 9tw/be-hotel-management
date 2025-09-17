@@ -160,9 +160,9 @@ const update = async (req, res) => {
 
       photoPath = path.join("/uploads", fileName); // save path in DB
       updateData = { ...other, photo: photoPath };
+    } else {
+      updateData = { ...other };
     }
-
-    updateData = { ...other };
 
     await data.update(updateData);
 
