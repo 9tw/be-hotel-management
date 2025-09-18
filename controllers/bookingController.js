@@ -54,6 +54,52 @@ const getBookingById = async (req, res) => {
   }
 };
 
+const getCheckOutToday = async (req, res) => {
+  try {
+    // Get today at 00:00
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    // Get tomorrow at 00:00
+    const todayEnd = new Date(todayStart);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const bookings = await booking.findAll({
+      where: {
+        to: {
+          [Op.gte]: todayStart, // from >= today 00:00
+          [Op.lt]: todayEnd, // from < tomorrow 00:00
+        },
+      },
+      include: [
+        {
+          model: room,
+          as: "room",
+          required: false,
+          attributes: ["id", "name"],
+        },
+      ],
+      attributes: {
+        include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
+      },
+    });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(200).send({
+        message: "Check Out today still empty.",
+        result: [],
+      });
+    }
+
+    return res.status(200).send({
+      message: "Sucessfully fetched check in today.",
+      result: bookings,
+    });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
 const getCheckInToday = async (req, res) => {
   try {
     // Get today at 00:00
@@ -452,6 +498,7 @@ module.exports = {
   update,
   destroy,
   getBookingById,
+  getCheckOutToday,
   getCheckInToday,
   getCheckInTomorrow,
   getBookingToday,

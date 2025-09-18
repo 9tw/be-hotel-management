@@ -6,6 +6,7 @@ const {
   update,
   destroy,
   getBookingById,
+  getCheckOutToday,
   getCheckInToday,
   getCheckInTomorrow,
   getBookingToday,
@@ -13,6 +14,7 @@ const {
 
 router.get("/", index);
 router.get("/get/:id", getBookingById);
+router.get("/check-out-today", getCheckOutToday);
 router.get("/check-in-today", getCheckInToday);
 router.get("/check-in-tomorrow", getCheckInTomorrow);
 router.get("/today", getBookingToday);
