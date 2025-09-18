@@ -30,7 +30,7 @@ const getRoomFilter = async (req, res) => {
           required: false,
           where: {
             [Op.and]: [
-              { from: { [Op.lte]: new Date(to) } },
+              { from: { [Op.lt]: new Date(to) } },
               { to: { [Op.gte]: fromChange } },
             ],
           },
