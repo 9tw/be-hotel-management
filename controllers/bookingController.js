@@ -294,6 +294,9 @@ const getBookingToday = async (req, res) => {
       if (from && to) {
         // 1. Fetch all rooms with overlapping bookings
         const rooms = await room.findAll({
+          where: {
+            id: { [Op.ne]: 0 },
+          },
           order: [["id", "ASC"]],
           include: [
             {
@@ -351,6 +354,9 @@ const getBookingToday = async (req, res) => {
       } else {
         const today = new Date();
         bookings = await room.findAll({
+          where: {
+            id: { [Op.ne]: 0 },
+          },
           order: [["id", "ASC"]],
           include: [
             {
