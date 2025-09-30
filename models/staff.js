@@ -25,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       phone_number: DataTypes.STRING,
       start_date: DataTypes.DATE,
       salary: DataTypes.INTEGER,
+      leave: DataTypes.INTEGER,
+      cut: DataTypes.INTEGER,
       photo: DataTypes.STRING,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
