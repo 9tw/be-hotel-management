@@ -82,22 +82,6 @@ const getStaffById = async (req, res) => {
   }
 };
 
-// const create = async (req, res) => {
-//   try {
-//     const { ...other } = req.body;
-
-//     const data = await staff.create({ ...other });
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Sucessfully created staff.",
-//       data: data,
-//     });
-//   } catch (error) {
-//     return res.status(500).send({ message: error.message });
-//   }
-// };
-
 const create = async (req, res) => {
   try {
     const { ...other } = req.body;
@@ -200,6 +184,16 @@ const destroy = async (req, res) => {
   }
 };
 
+const leaveUpdate = async (req, res) => {
+  try {
+    await staff.update({ cut: 0 }, { where: {} });
+
+    console.log("Sucessfully updated all staff annual leave.");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 module.exports = {
   index,
   create,
@@ -207,4 +201,5 @@ module.exports = {
   destroy,
   getAllStaffPagination,
   getStaffById,
+  leaveUpdate,
 };
