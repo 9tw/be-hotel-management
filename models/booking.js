@@ -28,6 +28,8 @@ module.exports = (sequelize, DataTypes) => {
       from: DataTypes.DATE,
       to: DataTypes.DATE,
       notes: DataTypes.STRING,
+      created_by: DataTypes.STRING,
+      updated_by: DataTypes.STRING,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
       deleted_at: DataTypes.DATE,
