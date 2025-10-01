@@ -139,7 +139,7 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { ...other } = req.body;
+    const { cut, ...other } = req.body;
 
     const data = await staff.findByPk(id);
     if (!data) {
@@ -159,7 +159,12 @@ const update = async (req, res) => {
       await photo.mv(filePath);
 
       photoPath = path.join("/uploads", fileName); // save path in DB
-      updateData = { ...other, photo: photoPath };
+      updateData = {
+        ...other,
+        photo: photoPath,
+      };
+    } else if (cut) {
+      updateData = { ...other, cut: Sequelize.literal(`cut + ${cut}`) };
     } else {
       updateData = { ...other };
     }
