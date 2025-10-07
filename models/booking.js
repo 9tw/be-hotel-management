@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       from: DataTypes.DATE,
       to: DataTypes.DATE,
       notes: DataTypes.STRING,
+      status: DataTypes.INTEGER,
       created_by: DataTypes.STRING,
       updated_by: DataTypes.STRING,
       created_at: DataTypes.DATE,
