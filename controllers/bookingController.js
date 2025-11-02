@@ -447,10 +447,9 @@ const getPrint = async (req, res) => {
         extension: "png",
       });
 
-      // Place image on the right side (columns I to K, rows 1-5)
       worksheet.addImage(imageId, {
-        tl: { col: 3, row: 0 }, // I1 (column I = 8, row 1 = 0)
-        br: { col: 4, row: 5 }, // K6 (column K = 10, row 6 = 5)
+        tl: { col: 3, row: 0 },
+        br: { col: 4, row: 5 },
       });
       worksheet.mergeCells("A5:K5");
       worksheet.mergeCells("A6:K6");
@@ -564,7 +563,7 @@ const getPrint = async (req, res) => {
       const fromDate = moment(bookings.from);
       const toDate = moment(bookings.to);
       const nights = toDate.diff(fromDate, "days");
-      const price = 85;
+      const price = bookings.price;
       const total = nights * price;
 
       worksheet.addRow([
@@ -947,18 +946,6 @@ const getPrint = async (req, res) => {
           fgColor: { argb: "FFADD8E6" },
         };
       });
-
-      // for (let row = 1; row <= 41; row++) {
-      //   for (let col = 1; col <= 11; col++) {
-      //     const cell = worksheet.getCell(row, col);
-      //     cell.border = {
-      //       top: { style: "thin" },
-      //       left: { style: "thin" },
-      //       bottom: { style: "thin" },
-      //       right: { style: "thin" },
-      //     };
-      //   }
-      // }
 
       const cell1 = worksheet.getCell(1, 1);
       cell1.border = {

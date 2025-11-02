@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       guest: DataTypes.INTEGER,
       from: DataTypes.DATE,
       to: DataTypes.DATE,
+      price: DataTypes.FLOAT,
       notes: DataTypes.STRING,
       status: DataTypes.INTEGER,
       created_by: DataTypes.STRING,
