@@ -1,45 +1,41 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class booking extends Model {
+  class staff extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      booking.belongsTo(models.room, {
-        foreignKey: "room_id",
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
-      });
+      // define association her
     }
   }
-  booking.init(
+  staff.init(
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      room_id: DataTypes.INTEGER,
       name: DataTypes.STRING,
-      guest: DataTypes.INTEGER,
-      from: DataTypes.DATE,
-      to: DataTypes.DATE,
-      price: DataTypes.FLOAT,
-      notes: DataTypes.STRING,
-      status: DataTypes.INTEGER,
-      created_by: DataTypes.STRING,
-      updated_by: DataTypes.STRING,
+      position: DataTypes.STRING,
+      ttl: DataTypes.STRING,
+      address: DataTypes.STRING,
+      phone_number: DataTypes.STRING,
+      start_date: DataTypes.DATE,
+      salary: DataTypes.INTEGER,
+      leave: DataTypes.INTEGER,
+      cut: DataTypes.INTEGER,
+      photo: DataTypes.STRING,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
       deleted_at: DataTypes.DATE,
     },
     {
       sequelize,
-      modelName: "booking",
-      tableName: "bookings",
+      modelName: "staff",
+      tableName: "staffs",
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -48,5 +44,5 @@ module.exports = (sequelize, DataTypes) => {
       deletedAt: "deleted_at",
     }
   );
-  return booking;
+  return staff;
 };

@@ -6,6 +6,9 @@ router.use("/auth", require("./auth"));
 router.use("/dashboard", authMiddleware, require("./dashboard"));
 router.use("/booking", authMiddleware, require("./booking"));
 router.use("/room", authMiddleware, require("./room"));
+router.use("/staff", authMiddleware, require("./staff"));
+router.use("/user", authMiddleware, require("./user"));
+router.use("/inventory", authMiddleware, require("./inventory"));
 
 router.use("/", (req, res) => {
   res.status(200).json({
