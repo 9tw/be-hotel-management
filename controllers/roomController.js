@@ -37,6 +37,7 @@ const getRoomFilter = async (req, res) => {
         },
       ],
       where: {
+        id: { [Op.ne]: 0 },
         status: { [Op.notIn]: [2, 3] },
         [Op.and]: Sequelize.where(Sequelize.col("bookings.id"), null),
       },
@@ -64,6 +65,9 @@ const getAllRoomPagination = async (req, res) => {
 
     // find with pagination
     const { count, rows } = await room.findAndCountAll({
+      where: {
+        id: { [Op.ne]: 0 },
+      },
       order: [["id", "ASC"]],
       limit,
       offset,
@@ -100,6 +104,9 @@ const getAllRoomPagination = async (req, res) => {
 const getAllRoomName = async (req, res) => {
   try {
     const rooms = await room.findAll({
+      where: {
+        id: { [Op.ne]: 0 },
+      },
       attributes: ["name"],
       order: [["id", "ASC"]],
       raw: true,

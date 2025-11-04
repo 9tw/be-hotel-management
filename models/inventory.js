@@ -1,21 +1,21 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class booking extends Model {
+  class inventory extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      booking.belongsTo(models.room, {
+      inventory.belongsTo(models.room, {
         foreignKey: "room_id",
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
     }
   }
-  booking.init(
+  inventory.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -24,22 +24,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       room_id: DataTypes.INTEGER,
       name: DataTypes.STRING,
-      guest: DataTypes.INTEGER,
-      from: DataTypes.DATE,
-      to: DataTypes.DATE,
-      price: DataTypes.FLOAT,
+      stock: DataTypes.INTEGER,
       notes: DataTypes.STRING,
-      status: DataTypes.INTEGER,
-      created_by: DataTypes.STRING,
-      updated_by: DataTypes.STRING,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
       deleted_at: DataTypes.DATE,
     },
     {
       sequelize,
-      modelName: "booking",
-      tableName: "bookings",
+      modelName: "inventory",
+      tableName: "inventories",
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -48,5 +42,5 @@ module.exports = (sequelize, DataTypes) => {
       deletedAt: "deleted_at",
     }
   );
-  return booking;
+  return inventory;
 };

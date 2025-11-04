@@ -11,6 +11,7 @@ const {
   getCheckOutToday,
   getCheckOutTomorrow,
   getBookingToday,
+  getPrint,
 } = require("../controllers/bookingController");
 
 router.get("/", index);
@@ -20,6 +21,7 @@ router.get("/check-in-tomorrow", getCheckInTomorrow);
 router.get("/check-out-today", getCheckOutToday);
 router.get("/check-out-tomorrow", getCheckOutTomorrow);
 router.get("/today", getBookingToday);
+router.get("/print", getPrint);
 router.post("/", create);
 router.put("/:id", update);
 router.delete("/:id", destroy);
