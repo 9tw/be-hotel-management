@@ -97,7 +97,7 @@ const create = async (req, res) => {
       // move file to uploads/
       await photo.mv(filePath);
 
-      photoPath = filePath; // save path in DB
+      photoPath = path.join("/uploads", fileName);
     }
 
     const data = await staff.create({
@@ -142,7 +142,7 @@ const update = async (req, res) => {
       // move file to uploads/
       await photo.mv(filePath);
 
-      photoPath = path.join("/uploads", fileName); // save path in DB
+      photoPath = path.join("/uploads", fileName);
       updateData = {
         ...other,
         photo: photoPath,
