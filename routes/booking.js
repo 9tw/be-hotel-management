@@ -8,6 +8,8 @@ const {
   getBookingById,
   getCheckInToday,
   getCheckInTomorrow,
+  getCheckOutToday,
+  getCheckOutTomorrow,
   getBookingToday,
   getPrint,
 } = require("../controllers/bookingController");
@@ -16,6 +18,8 @@ router.get("/", index);
 router.get("/get/:id", getBookingById);
 router.get("/check-in-today", getCheckInToday);
 router.get("/check-in-tomorrow", getCheckInTomorrow);
+router.get("/check-out-today", getCheckOutToday);
+router.get("/check-out-tomorrow", getCheckOutTomorrow);
 router.get("/today", getBookingToday);
 router.get("/print", getPrint);
 router.post("/", create);

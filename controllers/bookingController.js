@@ -62,9 +62,6 @@ const getBookingById = async (req, res) => {
 const getCheckInToday = async (req, res) => {
   try {
     // Get today at 00:00
-    // const todayStart = new Date();
-    // todayStart.setHours(0, 0, 0, 0);
-
     const todayStart = new Date(
       new Date().toLocaleString("en-US", {
         timeZone: "Asia/Tokyo",
@@ -133,6 +130,110 @@ const getCheckInTomorrow = async (req, res) => {
     const bookings = await booking.findAll({
       where: {
         from: {
+          [Op.gte]: tomorrowStart,
+          [Op.lt]: tomorrowEnd,
+        },
+      },
+      include: [
+        {
+          model: room,
+          as: "room",
+          required: false,
+          attributes: ["id", "name"],
+        },
+      ],
+      attributes: {
+        include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
+      },
+    });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(200).send({
+        message: "Check In tomorrow still empty.",
+        result: [],
+      });
+    }
+
+    return res.status(200).send({
+      message: "Sucessfully fetched check in tomorrow.",
+      result: bookings,
+    });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+const getCheckOutToday = async (req, res) => {
+  try {
+    // Get today at 00:00
+    const todayStart = new Date(
+      new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Tokyo",
+      })
+    );
+    todayStart.setHours(0, 0, 0, 0);
+
+    // Get tomorrow at 00:00
+    const todayEnd = new Date(todayStart);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const bookings = await booking.findAll({
+      where: {
+        to: {
+          [Op.gte]: todayStart,
+          [Op.lt]: todayEnd,
+        },
+      },
+      include: [
+        {
+          model: room,
+          as: "room",
+          required: false,
+          attributes: ["id", "name"],
+        },
+      ],
+      attributes: {
+        include: [[literal(`DATE_PART('day', "to" - "from")`), "night"]],
+      },
+    });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(200).send({
+        message: "Check Out today still empty.",
+        result: [],
+      });
+    }
+
+    return res.status(200).send({
+      message: "Sucessfully fetched check in today.",
+      result: bookings,
+    });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+const getCheckOutTomorrow = async (req, res) => {
+  try {
+    // Get today
+    const today = new Date(
+      new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Tokyo",
+      })
+    );
+    today.setDate(today.getDate() + 1);
+
+    // Get tomorrow at 00:00
+    const tomorrowStart = new Date(today);
+    tomorrowStart.setHours(0, 0, 0, 0);
+
+    // Get the day after tomorrow at 00:00
+    const tomorrowEnd = new Date(tomorrowStart);
+    tomorrowEnd.setDate(tomorrowEnd.getDate() + 1);
+
+    const bookings = await booking.findAll({
+      where: {
+        to: {
           [Op.gte]: tomorrowStart,
           [Op.lt]: tomorrowEnd,
         },
@@ -1240,13 +1341,13 @@ const getPrint = async (req, res) => {
       const infoText =
         moment(bookings.from).format("ddd, DD MMM YYYY") +
         `: ${bookings.notes}`;
-      const infoWidth = helveticaFont.widthOfTextAtSize(infoText, 12);
+      const infoWidth = helveticaBoldFont.widthOfTextAtSize(infoText, 16);
       const infoX = (pageWidth - infoWidth) / 2;
       page.drawText(infoText, {
         x: infoX,
         y: yPosition,
-        size: 12,
-        font: helveticaFont,
+        size: 16,
+        font: helveticaBoldFont,
         color: rgb(0.5, 0.5, 0.5), // grey color
       });
 
@@ -1389,6 +1490,8 @@ module.exports = {
   getBookingById,
   getCheckInToday,
   getCheckInTomorrow,
+  getCheckOutToday,
+  getCheckOutTomorrow,
   getBookingToday,
   getPrint,
 };
