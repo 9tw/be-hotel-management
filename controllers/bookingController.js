@@ -62,7 +62,14 @@ const getBookingById = async (req, res) => {
 const getCheckInToday = async (req, res) => {
   try {
     // Get today at 00:00
-    const todayStart = new Date();
+    // const todayStart = new Date();
+    // todayStart.setHours(0, 0, 0, 0);
+
+    const todayStart = new Date(
+      new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Tokyo",
+      })
+    );
     todayStart.setHours(0, 0, 0, 0);
 
     // Get tomorrow at 00:00
@@ -72,8 +79,8 @@ const getCheckInToday = async (req, res) => {
     const bookings = await booking.findAll({
       where: {
         from: {
-          [Op.gte]: todayStart, // from >= today 00:00
-          [Op.lt]: todayEnd, // from < tomorrow 00:00
+          [Op.gte]: todayStart,
+          [Op.lt]: todayEnd,
         },
       },
       include: [
@@ -108,7 +115,11 @@ const getCheckInToday = async (req, res) => {
 const getCheckInTomorrow = async (req, res) => {
   try {
     // Get today
-    const today = new Date();
+    const today = new Date(
+      new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Tokyo",
+      })
+    );
     today.setDate(today.getDate() + 1);
 
     // Get tomorrow at 00:00
@@ -122,8 +133,8 @@ const getCheckInTomorrow = async (req, res) => {
     const bookings = await booking.findAll({
       where: {
         from: {
-          [Op.gte]: tomorrowStart, // from >= tomorrow 00:00
-          [Op.lt]: tomorrowEnd, // from < the day after tomorrow 00:00
+          [Op.gte]: tomorrowStart,
+          [Op.lt]: tomorrowEnd,
         },
       },
       include: [
