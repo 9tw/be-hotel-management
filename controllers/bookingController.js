@@ -548,15 +548,15 @@ const getPrint = async (req, res) => {
         size: 16,
         color: { argb: "FF00008B" },
       };
-      worksheet.mergeCells("A1:K1");
+      worksheet.mergeCells("A1:H1");
       worksheet.addRow(["Bebonuk, Aldeia Meti I"]);
-      worksheet.mergeCells("A2:K2");
+      worksheet.mergeCells("A2:H2");
       worksheet.addRow(["Comoro, East Timor"]);
-      worksheet.mergeCells("A3:K3");
+      worksheet.mergeCells("A3:H3");
       worksheet.addRow(["Tel: (+670) 7751 3024 / 7726 3642"]).font = {
         color: { argb: "FF00008B" },
       };
-      worksheet.mergeCells("A4:K4");
+      worksheet.mergeCells("A4:H4");
       worksheet.addRow(["www.arbiruhotel.com"]).font = {
         color: { argb: "FF00008B" },
       };
@@ -568,40 +568,35 @@ const getPrint = async (req, res) => {
       });
 
       worksheet.addImage(imageId, {
-        tl: { col: 3, row: 0 },
-        br: { col: 4, row: 5 },
+        tl: { col: 1, row: 0 },
+        br: { col: 2, row: 5 },
       });
-      worksheet.mergeCells("A5:K5");
-      worksheet.mergeCells("A6:K6");
+      worksheet.mergeCells("A5:H5");
+      worksheet.mergeCells("A6:H6");
 
-      worksheet.addRow(["", "", "", "", "", "", "", "SHORT TERM", "", ""]);
-      worksheet.getRow(7).getCell(8).font = {
+      worksheet.addRow(["", "", "", "", "", "SHORT TERM", ""]);
+      worksheet.getRow(7).getCell(6).font = {
         bold: true,
         size: 16,
         color: { argb: "FF00008B" },
       };
-      worksheet.mergeCells("H7:I7");
+      worksheet.mergeCells("F7:G7");
 
       worksheet.addRow([
         "Client:",
         bookings.name,
         "",
         "",
-        "",
-        "",
         "Invoice No:",
         "",
         "",
         "",
-        "",
       ]);
-      worksheet.mergeCells("B8:E8");
-      worksheet.mergeCells("H8:K8");
+      worksheet.mergeCells("B8:D8");
+      worksheet.mergeCells("F8:H8");
 
       worksheet.addRow([
         "Company:",
-        "",
-        "",
         "",
         "",
         "",
@@ -609,15 +604,12 @@ const getPrint = async (req, res) => {
         bookings.room.name,
         "",
         "",
-        "",
       ]);
-      worksheet.mergeCells("B9:E9");
-      worksheet.mergeCells("H9:K9");
+      worksheet.mergeCells("B9:D9");
+      worksheet.mergeCells("F9:H9");
 
       worksheet.addRow([
         "Email:",
-        "",
-        "",
         "",
         "",
         "",
@@ -625,15 +617,12 @@ const getPrint = async (req, res) => {
         moment(bookings.from).format("MMMM"),
         "",
         "",
-        "",
       ]);
-      worksheet.mergeCells("B10:E10");
-      worksheet.mergeCells("H10:K10");
+      worksheet.mergeCells("B10:D10");
+      worksheet.mergeCells("F10:H10");
 
       worksheet.addRow([
         "Mobile:",
-        "",
-        "",
         "",
         "",
         "",
@@ -641,10 +630,9 @@ const getPrint = async (req, res) => {
         bookings.created_by,
         "",
         "",
-        "",
       ]);
-      worksheet.mergeCells("B11:E11");
-      worksheet.mergeCells("H11:K11");
+      worksheet.mergeCells("B11:D11");
+      worksheet.mergeCells("F11:H11");
 
       worksheet.addRow([
         "Date:",
@@ -655,30 +643,23 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("B12:E12");
+      worksheet.mergeCells("B12:D12");
 
-      worksheet.mergeCells("A13:K13");
+      worksheet.mergeCells("A13:H13");
 
       worksheet.addRow([
         "Type",
         "",
-        "",
         "Description",
-        "",
         "",
         "Qty",
         "Nights",
         "Price",
         "Total",
-        "",
       ]);
-      worksheet.mergeCells("A14:C14");
-      worksheet.mergeCells("D14:F14");
-      worksheet.mergeCells("J14:K14");
+      worksheet.mergeCells("A14:B14");
+      worksheet.mergeCells("C14:D14");
 
       const fromDate = moment(bookings.from);
       const toDate = moment(bookings.to);
@@ -689,31 +670,24 @@ const getPrint = async (req, res) => {
       worksheet.addRow([
         "Single Apartment",
         "",
-        "",
         bookings.notes,
-        "",
         "",
         1,
         nights,
         price,
         total,
-        "",
       ]);
-      worksheet.mergeCells("A15:C15");
-      worksheet.mergeCells("D15:F15");
-      worksheet.mergeCells("J15:K15");
+      worksheet.mergeCells("A15:B15");
+      worksheet.mergeCells("C15:D15");
 
-      worksheet.mergeCells("A16:C16");
-      worksheet.mergeCells("D16:F16");
-      worksheet.mergeCells("J16:K16");
+      worksheet.mergeCells("A16:B16");
+      worksheet.mergeCells("C16:D16");
 
-      worksheet.mergeCells("A17:C17");
-      worksheet.mergeCells("D17:F17");
-      worksheet.mergeCells("J17:K17");
+      worksheet.mergeCells("A17:B17");
+      worksheet.mergeCells("C17:D17");
 
-      worksheet.mergeCells("A18:C18");
-      worksheet.mergeCells("D18:F18");
-      worksheet.mergeCells("J18:K18");
+      worksheet.mergeCells("A18:B18");
+      worksheet.mergeCells("C18:D18");
 
       worksheet.addRow([
         "Rental Period:",
@@ -722,50 +696,38 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
         "Sub Total:",
         total,
-        "",
       ]);
-      worksheet.mergeCells("A19:C19");
-      worksheet.mergeCells("J19:K19");
+      worksheet.mergeCells("A19:B19");
 
       worksheet.addRow([
         "Commencement Date:",
-        "",
         "",
         moment(bookings.from).format("ddd, DD MMM YYYY"),
         "",
         "",
         "",
-        "",
         "DP:",
         0,
-        "",
       ]);
-      worksheet.mergeCells("A20:C20");
-      worksheet.mergeCells("D20:F20");
-      worksheet.mergeCells("J20:K20");
+      worksheet.mergeCells("A20:B20");
+      worksheet.mergeCells("C20:D20");
 
       worksheet.addRow([
         "Expiry Date & Check Out:",
-        "",
         "",
         moment(bookings.to).format("ddd, DD MMM YYYY"),
         "",
         "",
         "",
-        "",
         "Balance Due:",
         0,
-        "",
       ]);
-      worksheet.mergeCells("A21:C21");
-      worksheet.mergeCells("D21:F21");
-      worksheet.mergeCells("J21:K21");
+      worksheet.mergeCells("A21:B21");
+      worksheet.mergeCells("C21:D21");
 
-      worksheet.mergeCells("A22:K22");
+      worksheet.mergeCells("A22:H22");
 
       // Apply alignment and fill to the merged cell
       const clientCells = [
@@ -796,7 +758,7 @@ const getPrint = async (req, res) => {
       });
 
       // Apply alignment and fill to the merged cell
-      const totalCells = ["J19", "J20", "J21"];
+      const totalCells = ["H19", "H20", "H21"];
       totalCells.forEach((cell) => {
         const cel = worksheet.getCell(cell);
         cel.alignment = {
@@ -812,7 +774,7 @@ const getPrint = async (req, res) => {
       worksheet.addRow(["Payment Details"]).font = {
         bold: true,
       };
-      worksheet.mergeCells("A23:F23");
+      worksheet.mergeCells("A23:E23");
 
       worksheet.addRow([
         "Can be by direct cash to Arbiru Office or Bank Transfer:",
@@ -823,26 +785,11 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("A24:F24");
+      worksheet.mergeCells("A24:E24");
 
-      worksheet.addRow([
-        "MANDIRI BANK",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-      ]);
-      worksheet.mergeCells("A25:F25");
+      worksheet.addRow(["MANDIRI BANK", "", "", "", "", "", "", ""]);
+      worksheet.mergeCells("A25:E25");
 
       worksheet.addRow([
         "Arbiru Beach Resort, Unipessoal Lda",
@@ -853,11 +800,8 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("A26:F26");
+      worksheet.mergeCells("A26:E26");
 
       worksheet.addRow([
         "No.Rek : 601-00-0094990-2",
@@ -868,11 +812,8 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("A27:F27");
+      worksheet.mergeCells("A27:E27");
 
       worksheet.addRow([
         "N.Iban : TL380050601000094990259",
@@ -883,18 +824,15 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("A28:F28");
+      worksheet.mergeCells("A28:E28");
 
-      worksheet.mergeCells("A29:K29");
+      worksheet.mergeCells("A29:H29");
 
       worksheet.addRow(["Cancelation Policy"]).font = {
         bold: true,
       };
-      worksheet.mergeCells("A30:K30");
+      worksheet.mergeCells("A30:H30");
 
       worksheet.addRow([
         "1. Additional person will be charge as additional bill.",
@@ -905,11 +843,8 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("A31:K31");
+      worksheet.mergeCells("A31:H31");
 
       worksheet.addRow([
         "2. Hotel will not hold the above function and room if no deposit or definite confirmation received.",
@@ -920,11 +855,8 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("A32:K32");
+      worksheet.mergeCells("A32:H32");
 
       worksheet.addRow([
         "3. Cancelation event one day before will be charge 50% for Cancelation Policy.",
@@ -935,11 +867,8 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("A33:K33");
+      worksheet.mergeCells("A33:H33");
 
       worksheet.addRow([
         "4. Cancelation event on that day, hotel will charge full ( 100% ) for Cancelation Policy.",
@@ -950,16 +879,13 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("A34:K34");
+      worksheet.mergeCells("A34:H34");
 
-      worksheet.mergeCells("A35:K35");
-      worksheet.mergeCells("A36:K36");
-      worksheet.mergeCells("A37:K37");
-      worksheet.mergeCells("A38:K38");
+      worksheet.mergeCells("A35:H35");
+      worksheet.mergeCells("A36:H36");
+      worksheet.mergeCells("A37:H37");
+      worksheet.mergeCells("A38:H38");
 
       worksheet.addRow([
         "",
@@ -967,18 +893,15 @@ const getPrint = async (req, res) => {
         "",
         "",
         "",
-        "",
         "Customer's Signature",
         "",
         "",
-        "",
-        "",
       ]);
-      worksheet.mergeCells("B39:E39");
-      worksheet.mergeCells("G39:J39");
+      worksheet.mergeCells("B39:C39");
+      worksheet.mergeCells("F39:G39");
 
       // Apply alignment and fill to the merged cell
-      const signCells = ["B39", "G39"];
+      const signCells = ["B39", "F39"];
       signCells.forEach((cell) => {
         const cel = worksheet.getCell(cell);
         cel.alignment = {
@@ -987,14 +910,14 @@ const getPrint = async (req, res) => {
         };
       });
 
-      worksheet.mergeCells("A40:K40");
+      worksheet.mergeCells("A40:H40");
 
       worksheet.addRow([
         "Thankyou for choosing Arbiru Beach Resort for your stay and see you again!",
       ]).font = {
         bold: true,
       };
-      worksheet.mergeCells("A41:K41");
+      worksheet.mergeCells("A41:H41");
 
       // Apply alignment and fill to the merged cell
       const informationCells = [
@@ -1002,10 +925,18 @@ const getPrint = async (req, res) => {
         "A16",
         "A17",
         "A18",
-        "D15",
-        "D16",
-        "D17",
-        "D18",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "E15",
+        "E16",
+        "E17",
+        "E18",
+        "F15",
+        "F16",
+        "F17",
+        "F18",
         "G15",
         "G16",
         "G17",
@@ -1014,14 +945,6 @@ const getPrint = async (req, res) => {
         "H16",
         "H17",
         "H18",
-        "I15",
-        "I16",
-        "I17",
-        "I18",
-        "J15",
-        "J16",
-        "J17",
-        "J18",
         "A23",
         "A30",
       ];
@@ -1047,11 +970,11 @@ const getPrint = async (req, res) => {
         "A5",
         "A6",
         "A14",
-        "D14",
+        "C14",
+        "E14",
+        "F14",
         "G14",
         "H14",
-        "I14",
-        "J14",
         "A41",
       ];
       headerCells.forEach((cell) => {
@@ -1096,13 +1019,13 @@ const getPrint = async (req, res) => {
         };
       }
 
-      const cell3 = worksheet.getCell(7, 11);
+      const cell3 = worksheet.getCell(7, 8);
       cell3.border = {
         right: { style: "thin" },
       };
 
       for (let row = 8; row <= 12; row++) {
-        for (let col = 1; col <= 11; col++) {
+        for (let col = 1; col <= 8; col++) {
           if (col === 2 || (col === 8 && row != 12)) {
             const cell = worksheet.getCell(row, col);
             cell.border = {
@@ -1115,7 +1038,7 @@ const getPrint = async (req, res) => {
         }
       }
 
-      const cell4 = worksheet.getCell(12, 11);
+      const cell4 = worksheet.getCell(12, 8);
       cell4.border = {
         right: { style: "thin" },
       };
@@ -1127,7 +1050,7 @@ const getPrint = async (req, res) => {
       };
 
       for (let row = 14; row <= 18; row++) {
-        for (let col = 1; col <= 11; col++) {
+        for (let col = 1; col <= 8; col++) {
           const cell = worksheet.getCell(row, col);
           cell.border = {
             left: { style: "thin" },
@@ -1146,8 +1069,8 @@ const getPrint = async (req, res) => {
       }
 
       for (let row = 19; row <= 21; row++) {
-        for (let col = 4; col <= 11; col++) {
-          if (col === 10 || (col === 4 && row != 19)) {
+        for (let col = 4; col <= 8; col++) {
+          if (col === 8 || (col === 4 && row != 19)) {
             const cell = worksheet.getCell(row, col);
             cell.border = {
               left: { style: "thin" },
@@ -1178,7 +1101,7 @@ const getPrint = async (req, res) => {
       }
 
       for (let row = 23; row <= 28; row++) {
-        const cell = worksheet.getCell(row, 11);
+        const cell = worksheet.getCell(row, 8);
         cell.border = {
           right: { style: "thin" },
         };
@@ -1205,13 +1128,13 @@ const getPrint = async (req, res) => {
         left: { style: "thin" },
       };
 
-      const cell9 = worksheet.getCell(39, 11);
+      const cell9 = worksheet.getCell(39, 8);
       cell9.border = {
         right: { style: "thin" },
       };
 
-      for (let col = 1; col <= 11; col++) {
-        if (col === 2 || col === 7) {
+      for (let col = 1; col <= 8; col++) {
+        if (col === 2 || col === 6) {
           const cell = worksheet.getCell(39, col);
           cell.border = {
             top: { style: "thin" },
